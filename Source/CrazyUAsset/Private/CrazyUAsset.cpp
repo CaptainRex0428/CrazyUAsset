@@ -12,6 +12,8 @@
 #include "ContentBrowserModule.h"
 #include "IContentBrowserSingleton.h"
 
+#include "Log/CrazyLog.h"
+
 static const FName CrazyUAssetMainUIName("CrazyUAsset");
 
 #define LOCTEXT_NAMESPACE "FCrazyUAssetModule"
@@ -31,7 +33,7 @@ void FCrazyUAssetModule::StartupModule()
 
 	CrazyUAssetCommandList->MapAction(
 		FCrazyUAssetCommands::Get().CrazyMainUI_Command,
-		FExecuteAction::CreateRaw(this, &FCrazyUAssetModule::CrazyMainUIClicked),
+		FExecuteAction::CreateRaw(this, &FCrazyUAssetModule::OnCrazyMainUIClicked),
 		FCanExecuteAction());
 
 #pragma endregion
@@ -45,7 +47,7 @@ void FCrazyUAssetModule::StartupModule()
 #pragma region Register Tabs (What)
 
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(CrazyUAssetMainUIName, 
-		FOnSpawnTab::CreateRaw(this, &FCrazyUAssetModule::OnSpawnCrazyMainUI))
+		FOnSpawnTab::CreateRaw(this, &FCrazyUAssetModule::OnCrazyMainUISpawn))
 		.SetDisplayName(LOCTEXT("FCrazyUAssetTabTitle", "CrazyUAsset"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
 
@@ -69,7 +71,7 @@ void FCrazyUAssetModule::ShutdownModule()
 	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(CrazyUAssetMainUIName);
 }
 
-TSharedRef<SDockTab> FCrazyUAssetModule::OnSpawnCrazyMainUI(const FSpawnTabArgs& SpawnTabArgs)
+TSharedRef<SDockTab> FCrazyUAssetModule::OnCrazyMainUISpawn(const FSpawnTabArgs& SpawnTabArgs)
 {
 	FText WidgetText = FText::Format(
 		LOCTEXT("WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
@@ -91,7 +93,7 @@ TSharedRef<SDockTab> FCrazyUAssetModule::OnSpawnCrazyMainUI(const FSpawnTabArgs&
 		];
 }
 
-void FCrazyUAssetModule::CrazyMainUIClicked()
+void FCrazyUAssetModule::OnCrazyMainUIClicked()
 {
 	FGlobalTabmanager::Get()->TryInvokeTab(CrazyUAssetMainUIName);
 }

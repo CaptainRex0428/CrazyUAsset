@@ -16,13 +16,13 @@ public:
 	virtual void ShutdownModule() override;
 	
 	/** This function will be bound to Command (by default it will bring up plugin window) */
-	void CrazyMainUIClicked();
+	void OnCrazyMainUIClicked();
 	
 private:
 
 	void RegisterMenus();
 
-	TSharedRef<class SDockTab> OnSpawnCrazyMainUI(const class FSpawnTabArgs& SpawnTabArgs);
+	TSharedRef<class SDockTab> OnCrazyMainUISpawn(const class FSpawnTabArgs& SpawnTabArgs);
 
 private:
 	TSharedPtr<class FUICommandList> CrazyUAssetCommandList;
