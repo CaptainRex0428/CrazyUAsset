@@ -10,7 +10,7 @@ class CRAZYUASSET_API FCrazyChecker : public UAssetActionUtility
 public:
 #pragma region EditorChecker
 
-	static TArray<FString> GetCurrentContentBrowserSelectedPaths();
+	static TArray<FString> GetCurrentContentBrowserSelectedPaths(bool bRemoveStartTag = false);
 	static FString GetCurrentContentBrowserPath();
 
 #pragma endregion
