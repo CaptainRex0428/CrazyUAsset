@@ -18,5 +18,6 @@ public:
 	virtual void RegisterCommands() override;
 
 public:
-	TSharedPtr< FUICommandInfo > CrazyMainUI_Command;
+	TSharedPtr< FUICommandInfo > Command_CrazyMainUI_Current;
+	TSharedPtr< FUICommandInfo > Command_CrazyMainUI_Selected;
 };

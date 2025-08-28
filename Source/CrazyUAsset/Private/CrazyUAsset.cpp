@@ -13,6 +13,9 @@
 #include "IContentBrowserSingleton.h"
 
 #include "Log/CrazyLog.h"
+#include "Checker/CrazyChecker.h"
+
+#include "Slate/CrazyMainUI.h"
 
 static const FName CrazyUAssetMainUIName("CrazyUAsset");
 
@@ -32,8 +35,13 @@ void FCrazyUAssetModule::StartupModule()
 	CrazyUAssetCommandList = MakeShareable(new FUICommandList);
 
 	CrazyUAssetCommandList->MapAction(
-		FCrazyUAssetCommands::Get().CrazyMainUI_Command,
-		FExecuteAction::CreateRaw(this, &FCrazyUAssetModule::OnCrazyMainUIClicked),
+		FCrazyUAssetCommands::Get().Command_CrazyMainUI_Current,
+		FExecuteAction::CreateRaw(this, &FCrazyUAssetModule::OnCrazyMainUIClicked_CurrentBrowser),
+		FCanExecuteAction());
+
+	CrazyUAssetCommandList->MapAction(
+		FCrazyUAssetCommands::Get().Command_CrazyMainUI_Selected,
+		FExecuteAction::CreateRaw(this, &FCrazyUAssetModule::OnCrazyMainUIClicked_Selected),
 		FCanExecuteAction());
 
 #pragma endregion
@@ -73,27 +81,24 @@ void FCrazyUAssetModule::ShutdownModule()
 
 TSharedRef<SDockTab> FCrazyUAssetModule::OnCrazyMainUISpawn(const FSpawnTabArgs& SpawnTabArgs)
 {
-	FText WidgetText = FText::Format(
-		LOCTEXT("WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
-		FText::FromString(TEXT("FCrazyUAssetModule::OnSpawnPluginTab")),
-		FText::FromString(TEXT("CrazyUAsset.cpp"))
-		);
 
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
-			// Put your tab content here!
-			SNew(SBox)
-			.HAlign(HAlign_Center)
-			.VAlign(VAlign_Center)
-			[
-				SNew(STextBlock)
-				.Text(WidgetText)
-			]
+			SNew(SCrazyUAssetMainUI)
+			.SelectedFolderPaths(this->SelectedContentFolderPaths)
 		];
 }
 
-void FCrazyUAssetModule::OnCrazyMainUIClicked()
+void FCrazyUAssetModule::OnCrazyMainUIClicked_CurrentBrowser()
+{
+	this->SelectedContentFolderPaths.Empty();
+	this->SelectedContentFolderPaths.Add(FCrazyChecker::GetCurrentContentBrowserPath());
+
+	FGlobalTabmanager::Get()->TryInvokeTab(CrazyUAssetMainUIName);
+}
+
+void FCrazyUAssetModule::OnCrazyMainUIClicked_Selected()
 {
 	FGlobalTabmanager::Get()->TryInvokeTab(CrazyUAssetMainUIName);
 }
@@ -122,7 +127,7 @@ void FCrazyUAssetModule::RegisterMenus()
 							FMenuExtensionDelegate::CreateLambda([this](FMenuBuilder& MenuBuilder)
 								{
 									MenuBuilder.AddMenuEntry(
-										FCrazyUAssetCommands::Get().CrazyMainUI_Command,
+										FCrazyUAssetCommands::Get().Command_CrazyMainUI_Selected,
 										CrazyUAssetMainUIName,
 										LOCTEXT("CrazyMainUI_Label", "CrazyMainUI"),
 										TAttribute<FText>(),
@@ -143,7 +148,7 @@ void FCrazyUAssetModule::RegisterMenus()
 				FToolMenuInsert(FName("Save"), EToolMenuInsertType::After)
 			);
 
-			FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(FCrazyUAssetCommands::Get().CrazyMainUI_Command));
+			FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(FCrazyUAssetCommands::Get().Command_CrazyMainUI_Current));
 			Entry.SetCommandList(CrazyUAssetCommandList);
 			Entry.Icon = FSlateIcon(FCrazyUAssetStyle::GetStyleSetName(), "CrazyUAsset.MainUI");
 		}

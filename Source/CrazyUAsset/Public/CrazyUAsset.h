@@ -16,7 +16,8 @@ public:
 	virtual void ShutdownModule() override;
 	
 	/** This function will be bound to Command (by default it will bring up plugin window) */
-	void OnCrazyMainUIClicked();
+	void OnCrazyMainUIClicked_CurrentBrowser();
+	void OnCrazyMainUIClicked_Selected();
 	
 private:
 

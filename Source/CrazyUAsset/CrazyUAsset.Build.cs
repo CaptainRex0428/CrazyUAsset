@@ -8,11 +8,20 @@ public class CrazyUAsset : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
+		CppCompileWarningSettings.UnsafeTypeCastWarningLevel = WarningLevel.Error;
+
 		PublicIncludePaths.AddRange(
 			new string[] {
 				System.IO.Path.GetFullPath(Target.RelativeEnginePath) + "/Source/Developer/SkeletalMeshUtilitiesCommon/Public",
 			}
 			);
+
+		PrivateIncludePathModuleNames.AddRange(
+			new string[] {
+				"MainFrame",
+				"StatsViewer",
+			}
+		);
 
 
 		PrivateIncludePaths.AddRange(
@@ -25,6 +34,14 @@ public class CrazyUAsset : ModuleRules
 			}
 			);
 
+		PublicIncludePathModuleNames.AddRange(
+			new string[] {
+				"AssetTools",
+				"CollectionManager",
+				"ContentBrowserData",
+			}
+		);
+
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
@@ -33,7 +50,9 @@ public class CrazyUAsset : ModuleRules
 				"Blutility",
 				"EditorScriptingUtilities",
 				"EditorSubsystem",
-				"EditorFramework",	
+				"EditorStyle",
+				"EditorFramework",
+				"EditorWidgets",
 
 				"UMG",
 				"UMGEditor",
@@ -65,6 +84,8 @@ public class CrazyUAsset : ModuleRules
 				"InterchangePipelines",
 				"InterchangeNodes",
 
+				"TargetPlatform",
+
 				
 				// ... add other public dependencies that you statically link with here ...
 			}
@@ -76,12 +97,50 @@ public class CrazyUAsset : ModuleRules
 			{
 				"Projects",
 				"InputCore",
+				"ApplicationCore",
 				"Engine",
 				"Slate",
 				"SlateCore",
 				"UnrealEd",
 				"ToolMenus",
 				"CoreUObject",
+				"Json",
+				"CollectionManager",
+
+				"ContentBrowser",
+				"ContentBrowserData",
+
+				"WorkspaceMenuStructure",
+				"AssetDefinition",
+				"AppFramework",
+				"Core",
+				"CoreUObject",
+				"Documentation",
+				"DeveloperSettings",
+				"ApplicationCore",
+				"InputCore",
+				"EditorConfig",
+				"EditorStyle",
+				"AssetTools",
+				"ContentBrowserData",
+				"SourceControl",
+				"SourceControlWindows",
+				"WorkspaceMenuStructure",
+				"EditorFramework",
+				"EditorWidgets",
+				"AddContentDialog",
+				"AssetRegistry",
+				"AssetTagsEditor",
+				"StatusBar",
+				"ToolWidgets",
+				"TelemetryUtils",
+				"TypedElementFramework",
+				"PropertyEditor",
+				"KismetCompiler",
+				"EditorWidgets",
+				"TreeMap",
+				"ToolMenus",
+				"ToolWidgets",
 				
 				// ... add private dependencies that you statically link with here ...	
 			}

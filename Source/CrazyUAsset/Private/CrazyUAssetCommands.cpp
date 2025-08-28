@@ -6,7 +6,8 @@
 
 void FCrazyUAssetCommands::RegisterCommands()
 {
-	UI_COMMAND(CrazyMainUI_Command, "CrazyUAsset", "Crazy Main UI.", EUserInterfaceActionType::Button, FInputChord());
+	UI_COMMAND(Command_CrazyMainUI_Current, "CrazyUAsset", "Crazy Main UI", EUserInterfaceActionType::Button, FInputChord());
+	UI_COMMAND(Command_CrazyMainUI_Selected, "CrazyUAsset", "Crazy Main UI", EUserInterfaceActionType::Button, FInputChord());
 }
 
 #undef LOCTEXT_NAMESPACE
