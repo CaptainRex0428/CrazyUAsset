@@ -3,6 +3,8 @@
 #include "ContentBrowserModule.h"
 #include "IContentBrowserSingleton.h"
 
+#include "EditorAssetLibrary.h"
+
 TArray<FString> FCrazyAssetChecker::GetCurrentContentBrowserSelectedPaths(bool bRemoveStartTag)
 {
 	FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>(TEXT("ContentBrowser"));
@@ -34,4 +36,19 @@ FString FCrazyAssetChecker::GetCurrentContentBrowserPath(bool bRemoveStartTag)
 		PathStr.RemoveFromStart(L"/All");
 
 	return PathStr;
+}
+
+TArray<FString> FCrazyAssetChecker::GetAssetReferencedPath(const FString& AssetPath, bool bLoadToCheck)
+{
+	return UEditorAssetLibrary::FindPackageReferencersForAsset(AssetPath, bLoadToCheck);
+}
+
+TArray<FString> FCrazyAssetChecker::GetAssetReferencedPath(const TSharedPtr<FAssetData>& AssetData)
+{
+	return GetAssetReferencedPath(AssetData->GetObjectPathString());
+}
+
+TArray<FString> UCrazyAssetChecker::GetAssetReferencedPath(const FAssetData& AssetData)
+{
+	return FCrazyAssetChecker::GetAssetReferencedPath(AssetData.GetObjectPathString());
 }

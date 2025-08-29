@@ -37,7 +37,7 @@ void SCrazyUAssetMainUI::Construct(const FArguments& InArgs)
 	FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
 
 	// 配置AssetPicker
-	FAssetPickerConfig AssetPickerConfig = MakePickerConfig(this->ScanningFolderPaths);
+	FAssetPickerConfig AssetPickerConfig = CreatePickerConfig(this->ScanningFolderPaths);
 
 	AssetPickerConfig.OnAssetSelected = FOnAssetSelected::CreateSP(this,&SCrazyUAssetMainUI::OnAnyAssetSelected);
 

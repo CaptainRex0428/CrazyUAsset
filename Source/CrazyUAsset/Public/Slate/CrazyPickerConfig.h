@@ -30,11 +30,17 @@
  * FAssetPickerConfig Config = MakeAssetPickerConfig(Folders, Packages);
  * @endcode
  */
-FAssetPickerConfig MakePickerConfig(TArray<FName> FolderPaths = {}, TArray<FName> PackgePaths = {}, bool bAutoFixPath = true);
+FAssetPickerConfig CreatePickerConfig(TArray<FName> FolderPaths = {}, TArray<FName> PackgePaths = {}, bool bAutoFixPath = true);
 
-FAssetPickerConfig MakePickerConfig(TArray<FString> FolderPaths = {}, TArray<FString> PackgePaths = {}, bool bAutoFixPath = true);
+FAssetPickerConfig CreatePickerConfig(TArray<FString> FolderPaths = {}, TArray<FString> PackgePaths = {}, bool bAutoFixPath = true);
+
+
 
 void AppendPickerConfigPaths(FAssetPickerConfig& Configuration, TArray<FName> FolderPaths = {}, TArray<FName> PackgePaths = {}, bool AutoFixPath = true);
+
+
+// void SetAssetPickerConfig(FAssetPickerConfig& Configuration);
+
 
 template <typename T>
 TSharedPtr<T> FindChildInWidgetByType(TSharedPtr<SWidget>& Widget, bool bEnableDebugLog = false)
@@ -90,5 +96,3 @@ TSharedPtr<T> FindChildInWidgetByType(TSharedPtr<SWidget>& Widget, bool bEnableD
 
 	return nullptr;
 }
-
-// void SetAssetPickerConfig(FAssetPickerConfig& Configuration);

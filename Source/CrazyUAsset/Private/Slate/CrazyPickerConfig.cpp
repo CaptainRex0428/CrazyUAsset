@@ -2,19 +2,20 @@
 
 #include "Log/CrazyLog.h"
 #include "Operator/CrazyOperator.h"
+#include "Checker/CrazyChecker.h"
 
-FAssetPickerConfig MakePickerConfig(TArray<FName> FolderPaths, TArray<FName> PackgePaths, bool bAutoFixPath)
+FAssetPickerConfig CreatePickerConfig(TArray<FName> FolderPaths, TArray<FName> PackgePaths, bool bAutoFixPath)
 {
 	// 配置AssetPicker
 	FAssetPickerConfig AssetPickerConfig;
-	AssetPickerConfig.InitialAssetViewType = EAssetViewType::Column;
+	AssetPickerConfig.InitialAssetViewType = EAssetViewType::List;
 	AssetPickerConfig.InitialThumbnailSize = EThumbnailSize::Large;
 	AssetPickerConfig.AssetShowWarningText = FText::FromString(L"No results !!!");
 	AssetPickerConfig.bAddFilterUI = true;
 	AssetPickerConfig.bAllowDragging = true;
 	AssetPickerConfig.bAllowRename = true;
 
-	AssetPickerConfig.bAllowNullSelection = true;	
+	AssetPickerConfig.bAllowNullSelection = false;	
 
 	AssetPickerConfig.bCanShowClasses = true;
 	AssetPickerConfig.bCanShowDevelopersFolder = true;
@@ -30,6 +31,22 @@ FAssetPickerConfig MakePickerConfig(TArray<FName> FolderPaths, TArray<FName> Pac
 	AssetPickerConfig.bSortByPathInColumnView = true;
 
 	AssetPickerConfig.OnAssetDoubleClicked = FOnAssetDoubleClicked::CreateStatic(&UCrazyAssetOperator::OpenEditorUI);
+
+	// Referenced Column
+
+	AssetPickerConfig.CustomColumns.Add(FAssetViewCustomColumn(
+		FName(L"Referenced"),
+		FText::FromString(L"Referenced Count"),
+		FText::FromString("How many times referenced by other assets."),
+		UObject::FAssetRegistryTag::TT_Numerical,
+		FOnGetCustomAssetColumnData::CreateLambda(
+			[](const FAssetData& AssetData, const FName& ColumnName) -> FString
+			{
+				TArray<FString> ReferencedPath = UCrazyAssetChecker::GetAssetReferencedPath(AssetData);
+				return FString::FromInt(ReferencedPath.Num());
+			})));
+
+
 
 
 	if (bAutoFixPath) 
@@ -63,7 +80,7 @@ FAssetPickerConfig MakePickerConfig(TArray<FName> FolderPaths, TArray<FName> Pac
 	return AssetPickerConfig;
 }
 
-FAssetPickerConfig MakePickerConfig(TArray<FString> FolderPaths, TArray<FString> PackgePaths, bool bAutoFixPath)
+FAssetPickerConfig CreatePickerConfig(TArray<FString> FolderPaths, TArray<FString> PackgePaths, bool bAutoFixPath)
 {
 	TArray<FName> folderPaths_FName;
 	TArray<FName> packageNames_FName;
@@ -78,7 +95,7 @@ FAssetPickerConfig MakePickerConfig(TArray<FString> FolderPaths, TArray<FString>
 		packageNames_FName.Add(*name);
 	}
 
-	return MakePickerConfig(folderPaths_FName, packageNames_FName, bAutoFixPath);
+	return CreatePickerConfig(folderPaths_FName, packageNames_FName, bAutoFixPath);
 }
 
 void AppendPickerConfigPaths(FAssetPickerConfig& Configuration, TArray<FName> FolderPaths, TArray<FName> PackgePaths, bool AutoFixPath)
