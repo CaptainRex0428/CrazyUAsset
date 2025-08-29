@@ -4,14 +4,28 @@
 #include "AssetActionUtility.h"
 #include "AssetManagerEditorModule.h"
 
+#include "CrazyChecker.generated.h"
 
-class CRAZYUASSET_API FCrazyChecker : public UAssetActionUtility
+
+class CRAZYUASSET_API FCrazyAssetChecker : public UAssetActionUtility
 {
 public:
 #pragma region EditorChecker
 
 	static TArray<FString> GetCurrentContentBrowserSelectedPaths(bool bRemoveStartTag = false);
-	static FString GetCurrentContentBrowserPath();
+	static FString GetCurrentContentBrowserPath(bool bRemoveStartTag = false);
+
+#pragma endregion
+
+};
+
+UCLASS()
+class CRAZYUASSET_API UCrazyAssetChecker : public UAssetActionUtility
+{
+	GENERATED_BODY()
+
+public:
+#pragma region EditorChecker
 
 #pragma endregion
 

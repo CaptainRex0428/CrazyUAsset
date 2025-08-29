@@ -26,7 +26,17 @@ private:
 	TSharedRef<class SDockTab> OnCrazyMainUISpawn(const class FSpawnTabArgs& SpawnTabArgs);
 
 private:
+
 	TSharedPtr<class FUICommandList> CrazyUAssetCommandList;
 
-	TArray<FString> SelectedContentFolderPaths;
+#pragma region MainUI Info
+	
+	TArray<FString> CrazyMainUISelectedFolderPaths;
+	TArray<FString> CrazyMainUISelectedPackageNames;
+
+	TSharedPtr<class SDockTab> CrazyMainUIDockerTab;
+	TSharedPtr<class SCrazyUAssetMainUI> CrazyMainUI;
+
+#pragma endregion
+	
 };

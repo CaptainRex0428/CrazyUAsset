@@ -81,26 +81,53 @@ void FCrazyUAssetModule::ShutdownModule()
 
 TSharedRef<SDockTab> FCrazyUAssetModule::OnCrazyMainUISpawn(const FSpawnTabArgs& SpawnTabArgs)
 {
-
-	return SNew(SDockTab)
+	return SAssignNew(this->CrazyMainUIDockerTab, SDockTab)
 		.TabRole(ETabRole::NomadTab)
+		.OnTabClosed(SDockTab::FOnTabClosedCallback::CreateLambda(
+			[this](TSharedRef<SDockTab> DockTab) 
+			{
+				this->CrazyMainUI = nullptr;
+				this->CrazyMainUIDockerTab = nullptr; 
+
+				this->CrazyMainUISelectedFolderPaths.Empty();
+				this->CrazyMainUISelectedPackageNames.Empty();
+			}))
 		[
-			SNew(SCrazyUAssetMainUI)
-			.SelectedFolderPaths(this->SelectedContentFolderPaths)
+			SAssignNew(this->CrazyMainUI, SCrazyUAssetMainUI)
+			.SelectedFolderPaths(this->CrazyMainUISelectedFolderPaths)
 		];
 }
 
 void FCrazyUAssetModule::OnCrazyMainUIClicked_CurrentBrowser()
 {
-	this->SelectedContentFolderPaths.Empty();
-	this->SelectedContentFolderPaths.Add(FCrazyChecker::GetCurrentContentBrowserPath());
+	this->CrazyMainUISelectedFolderPaths.Empty();
+	this->CrazyMainUISelectedFolderPaths.Add(FCrazyAssetChecker::GetCurrentContentBrowserPath());
 
 	FGlobalTabmanager::Get()->TryInvokeTab(CrazyUAssetMainUIName);
+
+	if (this->CrazyMainUIDockerTab.IsValid())
+	{
+		
+	}
+	else
+	{
+		FGlobalTabmanager::Get()->TryInvokeTab(CrazyUAssetMainUIName);
+	}
 }
 
 void FCrazyUAssetModule::OnCrazyMainUIClicked_Selected()
 {
-	FGlobalTabmanager::Get()->TryInvokeTab(CrazyUAssetMainUIName);
+	this->CrazyMainUISelectedFolderPaths.Empty();
+	this->CrazyMainUISelectedFolderPaths.Append(FCrazyAssetChecker::GetCurrentContentBrowserSelectedPaths());
+
+	if (this->CrazyMainUIDockerTab.IsValid())
+	{
+		
+	}
+	else
+	{
+		FGlobalTabmanager::Get()->TryInvokeTab(CrazyUAssetMainUIName);
+	}
 }
 
 void FCrazyUAssetModule::RegisterMenus()
@@ -116,12 +143,10 @@ void FCrazyUAssetModule::RegisterMenus()
 				{
 					TSharedRef<FExtender> MenuExtender(new FExtender());
 
-					SelectedContentFolderPaths = SelectedPaths;
-
 					if (SelectedPaths.Num() > 0)
 					{
 						MenuExtender->AddMenuExtension(
-							FName("PathViewFolderOptions"),
+							FName("PathContextBulkOperations"),
 							EExtensionHook::After,
 							CrazyUAssetCommandList,
 							FMenuExtensionDelegate::CreateLambda([this](FMenuBuilder& MenuBuilder)

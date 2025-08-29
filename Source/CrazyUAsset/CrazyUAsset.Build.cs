@@ -20,6 +20,8 @@ public class CrazyUAsset : ModuleRules
 			new string[] {
 				"MainFrame",
 				"StatsViewer",
+				"ContentBrowser",
+				"ContentBrowserData",
 			}
 		);
 

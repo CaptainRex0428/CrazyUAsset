@@ -1,6 +1,6 @@
 #pragma once
 
-DECLARE_LOG_CATEGORY_EXTERN(CrazyUAssetLog, Verbose, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogCrazyUAsset, Verbose, All);
 
 /*
 * MessageTypeIdx > 0 Tips

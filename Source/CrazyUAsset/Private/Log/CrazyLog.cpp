@@ -4,21 +4,21 @@
 #include "FrameWork/Notifications/NotificationManager.h"
 #include "Logging/LogMacros.h"
 
-DEFINE_LOG_CATEGORY(CrazyUAssetLog);
+DEFINE_LOG_CATEGORY(LogCrazyUAsset);
 
 void CrazyLogOnly(const FString& Message, int MessageTypeIdx)
 {
 	if (MessageTypeIdx > 0)
 	{
-		UE_LOG(CrazyUAssetLog, Log, TEXT("%s"), *Message);
+		UE_LOG(LogCrazyUAsset, Log, TEXT("%s"), *Message);
 	}
 	else if(MessageTypeIdx < 0)
 	{
-		UE_LOG(CrazyUAssetLog, Warning, TEXT("%s"), *Message);
+		UE_LOG(LogCrazyUAsset, Warning, TEXT("%s"), *Message);
 	}
 	else
 	{
-		UE_LOG(CrazyUAssetLog, Error, TEXT("%s"), *Message);
+		UE_LOG(LogCrazyUAsset, Error, TEXT("%s"), *Message);
 	}	
 }
 

@@ -3,7 +3,7 @@
 #include "ContentBrowserModule.h"
 #include "IContentBrowserSingleton.h"
 
-TArray<FString> FCrazyChecker::GetCurrentContentBrowserSelectedPaths(bool bRemoveStartTag)
+TArray<FString> FCrazyAssetChecker::GetCurrentContentBrowserSelectedPaths(bool bRemoveStartTag)
 {
 	FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>(TEXT("ContentBrowser"));
 	IContentBrowserSingleton& ContentBrowser = ContentBrowserModule.Get();
@@ -22,14 +22,16 @@ TArray<FString> FCrazyChecker::GetCurrentContentBrowserSelectedPaths(bool bRemov
 	return SelectedPaths;
 }
 
-FString FCrazyChecker::GetCurrentContentBrowserPath()
+FString FCrazyAssetChecker::GetCurrentContentBrowserPath(bool bRemoveStartTag)
 {
 	FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>(TEXT("ContentBrowser"));
 	IContentBrowserSingleton& ContentBrowser = ContentBrowserModule.Get();
 
 	FContentBrowserItemPath Path = ContentBrowser.GetCurrentPath();
 	FString PathStr = Path.GetVirtualPathString();
-	PathStr.RemoveFromStart(L"/All");
+
+	if (bRemoveStartTag)
+		PathStr.RemoveFromStart(L"/All");
 
 	return PathStr;
 }

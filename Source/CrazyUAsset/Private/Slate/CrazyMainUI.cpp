@@ -13,13 +13,15 @@
 
 #include "AssetRegistry/AssetRegistryModule.h"
 
+#include "Slate/CrazyPickerConfig.h"
+
 void SCrazyUAssetMainUI::Construct(const FArguments& InArgs)
 {
-	this->FolderPaths = InArgs._SelectedFolderPaths;
+	this->ScanningFolderPaths = InArgs._SelectedFolderPaths;
 
 	FString paths;
 
-	for (auto path : this->FolderPaths)
+	for (auto path : this->ScanningFolderPaths)
 	{
 		paths += path;
 		paths += "\n";
@@ -34,29 +36,10 @@ void SCrazyUAssetMainUI::Construct(const FArguments& InArgs)
 
 	FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
 
-	FARFilter DebugFilter;
-	DebugFilter.PackagePaths.Add(FName("/All/Game/EasyTechArt_Unreal"));
-	DebugFilter.bRecursivePaths = true;
-
 	// 配置AssetPicker
-	FAssetPickerConfig AssetPickerConfig;
-	AssetPickerConfig.InitialAssetViewType = EAssetViewType::Column;
-	AssetPickerConfig.AssetShowWarningText = FText::FromString(L"No results !!!");
-	AssetPickerConfig.bAddFilterUI = true;
-	AssetPickerConfig.bAllowDragging = true;
-	AssetPickerConfig.bAllowNullSelection = true;
-	AssetPickerConfig.bAllowRename = true;
-	AssetPickerConfig.bCanShowClasses = true;
-	AssetPickerConfig.bCanShowDevelopersFolder = true;
-	AssetPickerConfig.bCanShowFolders = false;
-	AssetPickerConfig.bCanShowRealTimeThumbnails = true;
-	AssetPickerConfig.bFocusSearchBoxWhenOpened = true;
-	AssetPickerConfig.bShowBottomToolbar = true;
-	AssetPickerConfig.bShowPathInColumnView = true;
-	AssetPickerConfig.bShowTypeInColumnView = true;
-	AssetPickerConfig.bSortByPathInColumnView = true;
-	AssetPickerConfig.InitialThumbnailSize = EThumbnailSize::Medium;
-	AssetPickerConfig.Filter = DebugFilter;
+	FAssetPickerConfig AssetPickerConfig = MakePickerConfig(this->ScanningFolderPaths);
+
+	AssetPickerConfig.OnAssetSelected = FOnAssetSelected::CreateSP(this,&SCrazyUAssetMainUI::OnAnyAssetSelected);
 
 #pragma region Construct Framework
 
@@ -64,6 +47,12 @@ void SCrazyUAssetMainUI::Construct(const FArguments& InArgs)
 
 	// 创建AssetPicker widget
 	this -> AssetPickerWidget = ContentBrowserModule.Get().CreateAssetPicker(AssetPickerConfig);
+	this -> AssetViewWidget = FindChildInWidgetByType<SAssetView>(this->AssetPickerWidget);
+
+	if (!this->AssetViewWidget.IsValid())
+	{
+		CrazyLogOnly("[Attention] SAssetView widget doesn't exist.", -1);
+	}
 
 	MainBox->AddSlot()
 		.AutoHeight()
@@ -95,5 +84,18 @@ void SCrazyUAssetMainUI::Construct(const FArguments& InArgs)
 		[
 			MainBox.ToSharedRef()
 		];
+
+}
+
+void SCrazyUAssetMainUI::Update()
+{
+
+}
+
+void SCrazyUAssetMainUI::OnAnyAssetSelected(const FAssetData& AssetData)
+{
+	this->SelectedAssets = this->AssetViewWidget->GetSelectedAssets();
+
+	CrazyLogOnly(FString::Printf(L"Selected Assets Count:%d", this->SelectedAssets.Num()));
 
 }
